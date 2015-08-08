@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\NPOI.dll" />
+    <Content Include="home.aspx" />
     <Content Include="image\Close.png" />
     <Content Include="image\download.jpg" />
     <Content Include="image\edit.png" />
@@ -82,6 +83,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Datalayer\ProfitCenter.cs" />
+    <Compile Include="home.aspx.cs">
+      <DependentUpon>home.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="home.aspx.designer.cs">
+      <DependentUpon>home.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ProfitCenter.aspx.cs">
       <DependentUpon>ProfitCenter.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -101,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Export\" />
+    <Folder Include="temp\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

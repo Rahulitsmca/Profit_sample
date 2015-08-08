@@ -5,3 +5,10 @@ c:\users\rahulgupta\documents\visual studio 2013\Projects\ProfitCenterReport\Pro
 c:\users\rahulgupta\documents\visual studio 2013\Projects\ProfitCenterReport\ProfitCenterReport\obj\Debug\ProfitCenterReport.dll
 c:\users\rahulgupta\documents\visual studio 2013\Projects\ProfitCenterReport\ProfitCenterReport\obj\Debug\ProfitCenterReport.pdb
 C:\Users\rahulgupta\documents\visual studio 2013\Projects\ProfitCenterReport\ProfitCenterReport\bin\NPOI.dll
+C:\Users\rahulgupta\Documents\GitHub\Profit_sample\ProfitCenterReport\bin\ProfitCenterReport.dll.config
+C:\Users\rahulgupta\Documents\GitHub\Profit_sample\ProfitCenterReport\bin\ProfitCenterReport.dll
+C:\Users\rahulgupta\Documents\GitHub\Profit_sample\ProfitCenterReport\bin\ProfitCenterReport.pdb
+C:\Users\rahulgupta\Documents\GitHub\Profit_sample\ProfitCenterReport\bin\NPOI.dll
+C:\Users\rahulgupta\Documents\GitHub\Profit_sample\ProfitCenterReport\obj\Debug\ProfitCenterReport.csprojResolveAssemblyReference.cache
+C:\Users\rahulgupta\Documents\GitHub\Profit_sample\ProfitCenterReport\obj\Debug\ProfitCenterReport.dll
+C:\Users\rahulgupta\Documents\GitHub\Profit_sample\ProfitCenterReport\obj\Debug\ProfitCenterReport.pdb
