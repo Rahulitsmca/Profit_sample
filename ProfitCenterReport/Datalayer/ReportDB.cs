@@ -288,5 +288,37 @@ namespace ProfitCenterReport
             }
         }
 
+        public DataSet GetExpenseData(int profitCenter, string tarrifFormName, int blockYear, int unit)
+        {
+            SqlConnection con = new SqlConnection(connectionString);
+            SqlCommand cmd = new SqlCommand("sp_GetExpenseData", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new SqlParameter("@ProfitCenter", SqlDbType.Int, 4));
+            cmd.Parameters.Add(new SqlParameter("@TarrifFormName", SqlDbType.VarChar, 10));
+            cmd.Parameters.Add(new SqlParameter("@BlockYear", SqlDbType.Int, 10));
+            cmd.Parameters.Add(new SqlParameter("@Unit", SqlDbType.Int, 10));
+            cmd.Parameters["@ProfitCenter"].Value = profitCenter;
+            cmd.Parameters["@TarrifFormName"].Value = tarrifFormName;
+            cmd.Parameters["@BlockYear"].Value = blockYear;
+            cmd.Parameters["@Unit"].Value = unit;
+
+            DataSet ds = new DataSet();
+            try
+            {
+                con.Open();
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(ds);
+                return ds;
+            }
+            catch (SqlException err)
+            {
+                throw new ApplicationException("Data error.");
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
     }
 }

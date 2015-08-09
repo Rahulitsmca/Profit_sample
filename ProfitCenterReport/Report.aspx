@@ -90,7 +90,7 @@
             <tr valign="middle">
                 <td colspan="2">
                     <asp:Label Text="" runat="server" ID="lblFormName" Font-Bold="true" />
-                    <asp:Button ID="btnReport" CssClass="float_right" runat="server" Visible="false" Text="Export Report" OnClick="btnReport_Click" />
+                    <asp:Button ID="btnReport" CssClass="float_right" runat="server" Text="Export Report" OnClick="btnReport_Click" />
 
                 </td>
             </tr>

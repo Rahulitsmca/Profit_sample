@@ -68,7 +68,6 @@ namespace ProfitCenterReport
                             unit = 100000;
 
                         BindGrid();
-                        btnReport_Click(null, null);
                     }
                 }
             }
@@ -226,32 +225,60 @@ namespace ProfitCenterReport
                     fifthRow.CreateCell(i).SetCellValue(Convert.ToString(row[0]));
                 }
 
-
-
                 // handling value.
                 int rowIndex = 6;
-                foreach (DataRow row in ds.Tables[0].Rows)
+
+                HSSFRow sixthRow = (HSSFRow)sheet.CreateRow(rowIndex);
+                for (int i = 0; i < ds.Tables[0].Columns.Count - 1; i++)
                 {
-                    HSSFRow sixthRow = (HSSFRow)sheet.CreateRow(6);
+                    sixthRow.CreateCell(i).SetCellValue(ds.Tables[0].Columns[i].ColumnName);
+                    sixthRow.GetCell(i).CellStyle = cellStyleBold;
+                }
+                foreach (DataRow headerRow in ds.Tables[3].Rows)
+                {
+                    string filterExp = string.Format("MainHead_tariff_Name='{0}'", headerRow[0]);
+                    HSSFRow subHeadRow = (HSSFRow)sheet.CreateRow(++rowIndex);
+                    subHeadRow.CreateCell(0).SetCellValue(Convert.ToString(headerRow[0]));
+                    subHeadRow.GetCell(0).CellStyle = cellStyleBold;
 
-                    HSSFRow dataRow = (HSSFRow)sheet.CreateRow(rowIndex);
-                    rowIndex++;
-                    foreach (DataColumn column in ds.Tables[0].Columns)
+                    foreach (DataRow row in ds.Tables[0].Select(filterExp))
                     {
-                        sixthRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
-
-                        if (!System.DBNull.Value.Equals(row[column]))
+                        HSSFRow dataRow = (HSSFRow)sheet.CreateRow(++rowIndex);
+                        foreach (DataColumn column in ds.Tables[0].Columns)
                         {
-                            if (column.DataType == typeof(Nullable))
-                                dataRow.CreateCell(column.Ordinal).SetCellValue(Convert.ToString(row[column]));
-                            else if (column.DataType == typeof(DateTime))
-                                dataRow.CreateCell(column.Ordinal).SetCellValue(Convert.ToDateTime(row[column]));
-                            else if (column.DataType == typeof(decimal))
-                                dataRow.CreateCell(column.Ordinal).SetCellValue(Convert.ToDouble(row[column]));
-                            else
-                                dataRow.CreateCell(column.Ordinal).SetCellValue(Convert.ToString(row[column]));
+                            if (column.ColumnName == "MainHead_tariff_Name")
+                                continue;
+                            if (!System.DBNull.Value.Equals(row[column]))
+                            {
+                                if (column.DataType == typeof(Nullable))
+                                    dataRow.CreateCell(column.Ordinal).SetCellValue(Convert.ToString(row[column]));
+                                else if (column.DataType == typeof(DateTime))
+                                    dataRow.CreateCell(column.Ordinal).SetCellValue(Convert.ToDateTime(row[column]));
+                                else if (column.DataType == typeof(decimal))
+                                    dataRow.CreateCell(column.Ordinal).SetCellValue(Convert.ToDouble(row[column]));
+                                else
+                                    dataRow.CreateCell(column.Ordinal).SetCellValue(Convert.ToString(row[column]));
+                            }
                         }
                     }
+
+                    HSSFRow subTotalRow = (HSSFRow)sheet.CreateRow(++rowIndex);
+                    subTotalRow.CreateCell(0).SetCellValue("Sub Total");
+                    subTotalRow.GetCell(0).CellStyle = cellStyleBold;
+                    foreach (DataColumn column in ds.Tables[0].Columns)
+                    {
+
+                    }
+                    for (int i = 1; i < ds.Tables[0].Columns.Count - 1; i++)
+                    {
+                        if (headerRow[i] != DBNull.Value)
+                        {
+                            subTotalRow.CreateCell(i).SetCellValue(Convert.ToDouble(headerRow[i]));
+                            subTotalRow.GetCell(i).CellStyle = cellStyleBold;
+                        }
+                    }
+                    HSSFRow blankRow = (HSSFRow)sheet.CreateRow(++rowIndex);
+
                 }
             }
 
@@ -270,7 +297,7 @@ namespace ProfitCenterReport
             output.Close();
             file.Close();
 
-            Server.Transfer("~/Export/report.xls", true);
+            //Server.Transfer("~/Export/report.xls", true);
         }
 
         private void GenerateExcel(DataSet customerOrders)
