@@ -39,6 +39,7 @@ namespace ProfitCenterReport
         double dblGrandTotalThdYear = 0;
         double dblGrandTotalFothYear = 0;
         double dblGrandTotalFifthYear = 0;
+        Dictionary<string, int> d = new Dictionary<string, int>();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -85,7 +86,7 @@ namespace ProfitCenterReport
                 DataSet ds = new DataSet();
                 SqlDataAdapter ad = new SqlDataAdapter(cmd);
                 ad.Fill(ds);
-                
+
                 lblHeaderName.Text = dt.Tables[2].Rows[0][0].ToString();
                 if (dt.Tables[0] != null)
                 {
@@ -345,8 +346,9 @@ namespace ProfitCenterReport
             {
                 int id = Convert.ToInt32(GridView1.DataKeys[e.RowIndex].Value.ToString());
                 GridViewRow row = (GridViewRow)GridView1.Rows[e.RowIndex];
+
                 TextBox textActual = (TextBox)row.Cells[1].FindControl("txtACTUAL");
-                TextBox textYear1 = (TextBox)row.Cells[2].FindControl("txtyear1");
+                TextBox textYear1 = (TextBox)GridView1.Rows[e.RowIndex].Cells[2].FindControl("txtyear1");
                 TextBox textYear2 = (TextBox)row.Cells[3].FindControl("txtyear2");
                 TextBox textYear3 = (TextBox)row.Cells[4].FindControl("txtyear3");
                 TextBox textYear4 = (TextBox)row.Cells[5].FindControl("txtyear4");
@@ -383,6 +385,7 @@ namespace ProfitCenterReport
 
         protected void GridView1_RowCreated(object sender, GridViewRowEventArgs e)
         {
+            
             bool IsSubTotalRowNeedToAdd = false;
             bool IsGrandTotalRowNeedtoAdd = false;
             if ((strPreviousRowID != string.Empty) && (DataBinder.Eval(e.Row.DataItem, "MainHead_tariff_Name") != null))
@@ -406,7 +409,9 @@ namespace ProfitCenterReport
                 row.Cells.Add(cell);
                 grdViewOrders.Controls[0].Controls.AddAt(e.Row.RowIndex + intSubTotalIndex, row);
                 intSubTotalIndex++;
+                d.Add(DataBinder.Eval(e.Row.DataItem, "MainHead_tariff_Name").ToString(), intSubTotalIndex-1);
             }
+
             #endregion
             if (IsSubTotalRowNeedToAdd)
             {
@@ -456,6 +461,7 @@ namespace ProfitCenterReport
                 //Adding the Row at the RowIndex position in the Grid      
                 GridView1.Controls[0].Controls.AddAt(e.Row.RowIndex + intSubTotalIndex, row);
                 intSubTotalIndex++;
+                
                 #endregion
                 #region Adding Next Group Header Details
                 if (DataBinder.Eval(e.Row.DataItem, "MainHead_tariff_Name") != null)
@@ -468,6 +474,7 @@ namespace ProfitCenterReport
                     row.Cells.Add(cell);
                     GridView1.Controls[0].Controls.AddAt(e.Row.RowIndex + intSubTotalIndex, row);
                     intSubTotalIndex++;
+                    d.Add(DataBinder.Eval(e.Row.DataItem, "MainHead_tariff_Name").ToString(), intSubTotalIndex-1);
                 }
                 #endregion
                 #region Reseting the Sub Total Variables
@@ -527,6 +534,7 @@ namespace ProfitCenterReport
                 row.Cells.Add(cell);
                 //Adding the Row at the RowIndex position in the Grid     
                 grdViewOrders.Controls[0].Controls.AddAt(e.Row.RowIndex, row);
+                Session["mysession"] = d;
                 #endregion
             }
         }
@@ -536,7 +544,7 @@ namespace ProfitCenterReport
         /// </summary>   
         /// /// <param name="sender"></param>    
         /// <param name="e"></param>    
-       
+
         protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -579,8 +587,20 @@ namespace ProfitCenterReport
                 dblGrandTotalThdYear += dblThdYear;
                 dblGrandTotalFothYear += dblFothYear;
                 dblGrandTotalFifthYear += dblFiftYear;
+                // This is for cumulating the values  
+                if (e.Row.RowType == DataControlRowType.DataRow)
+                {
+                    e.Row.Attributes.Add("onmouseover", "this.style.backgroundColor='#ddd'");
+                    e.Row.Attributes.Add("onmouseout", "this.style.backgroundColor=''");
+                    e.Row.Attributes.Add("style", "cursor:pointer;");
+                    int a = e.Row.RowIndex + intSubTotalIndex;
+                    e.Row.Attributes["onclick"] = "add(this);";
 
+
+                }
             }
         }
+
+        
     }
 }
