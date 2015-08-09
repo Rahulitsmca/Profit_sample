@@ -68,6 +68,7 @@ namespace ProfitCenterReport
                             unit = 100000;
 
                         BindGrid();
+                        btnReport_Click(null, null);
                     }
                 }
             }
@@ -88,8 +89,8 @@ namespace ProfitCenterReport
                 //DataSet ds = new DataSet();
                 //SqlDataAdapter ad = new SqlDataAdapter(cmd);
                 //ad.Fill(ds);
-
-                lblHeaderName.Text = dt.Tables[2].Rows[0][0].ToString();
+                if (dt.Tables[2].Rows.Count > 0)
+                    lblHeaderName.Text = Convert.ToString(dt.Tables[2].Rows[0][0]);
                 if (dt.Tables[0] != null)
                 {
                     GridView1.DataSource = dt.Tables[0];
@@ -188,7 +189,6 @@ namespace ProfitCenterReport
 
                 //Getting reportData
                 ds = new ReportDB().GetReportDataForExcel(pcId, item[0].ToString(), Convert.ToInt32(actualYear), unit);
-
 
 
                 //setting width of cloumns in excel

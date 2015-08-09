@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\NPOI.dll" />
+    <Content Include="dbScript\script.sql" />
     <Content Include="home.aspx" />
     <Content Include="image\Close.png" />
     <Content Include="image\download.jpg" />
