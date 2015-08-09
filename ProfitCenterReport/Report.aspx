@@ -38,13 +38,17 @@
             font-size: 11px;
             font-family: Verdana;
         }
+
+        .float_right {
+            float: right;
+        }
     </style>
     <script>
 
         function add(a) {
             var tblUpdate = document.getElementById("tblUpdate");
             tblUpdate.style.display = "table";
-            
+
             var classRemove = document.getElementsByClassName("grid-sltrow");
             for (var i = 0; i < classRemove.length; i++) {
                 classRemove[i].className = '';
@@ -86,6 +90,7 @@
             <tr valign="middle">
                 <td colspan="2">
                     <asp:Label Text="" runat="server" ID="lblFormName" Font-Bold="true" />
+                    <asp:Button ID="btnReport" CssClass="float_right" runat="server" Visible="false" Text="Export Report" OnClick="btnReport_Click" />
 
                 </td>
             </tr>
@@ -166,7 +171,7 @@
                 </td>
             </tr>
         </table>
-        <table cellpadding="0" cellspacing="5" class="tableInfo" border="0" id="tblUpdate" style="display:none;">
+        <table cellpadding="0" cellspacing="5" class="tableInfo" border="0" id="tblUpdate" style="display: none;">
             <tr>
                 <td>
                     <asp:HiddenField ID="hidden" runat="server" Value="0" />
@@ -222,7 +227,6 @@
 
 
 
-        <asp:Button ID="btnReport" runat="server" Text="Export" OnClick="btnReport_Click" />
 
 
 

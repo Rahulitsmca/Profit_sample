@@ -44,6 +44,8 @@ namespace ProfitCenterReport
         {
             if (!IsPostBack)
             {
+                if (string.IsNullOrEmpty(Request.QueryString["link"]))
+                    Session["menuContent"] = null;
                 if (!string.IsNullOrEmpty(Request.QueryString["centerid"]))
                 {
                     pcId = Convert.ToInt32(Request.QueryString["centerid"]);
@@ -56,6 +58,7 @@ namespace ProfitCenterReport
 
                     if (!string.IsNullOrEmpty(Request.QueryString["tfName"]))
                     {
+                        btnReport.Visible = true;
                         tfName = Request.QueryString["tfName"].ToString();
                         lblFormName.Text = string.Format(ConfigurationManager.AppSettings["formName"], tfName.ToUpper());
 
@@ -76,20 +79,20 @@ namespace ProfitCenterReport
             {
                 ReportDB _db = new ReportDB();
                 string actualYear = ConfigurationManager.AppSettings["ActualYear"];
-                DataSet dt = _db.GetReportData(pcId, tfName, Convert.ToInt32(actualYear), unit);
+                DataSet dt = _db.GetExpenseData(pcId, tfName, Convert.ToInt32(actualYear), unit);
 
-                string connectionString = WebConfigurationManager.ConnectionStrings["ComsoftAAIConnection"].ConnectionString;
+                //string connectionString = WebConfigurationManager.ConnectionStrings["ComsoftAAIConnection"].ConnectionString;
 
-                SqlConnection con = new SqlConnection(connectionString);
-                SqlCommand cmd = new SqlCommand("select * from tariff_expenditure_revenue_file where profitcenter=12018 and tariff_form_name='F11(B)'", con);
-                DataSet ds = new DataSet();
-                SqlDataAdapter ad = new SqlDataAdapter(cmd);
-                ad.Fill(ds);
+                //SqlConnection con = new SqlConnection(connectionString);
+                //SqlCommand cmd = new SqlCommand("select * from tariff_expenditure_revenue_file where profitcenter=12018 and tariff_form_name='F11(B)'", con);
+                //DataSet ds = new DataSet();
+                //SqlDataAdapter ad = new SqlDataAdapter(cmd);
+                //ad.Fill(ds);
 
                 lblHeaderName.Text = dt.Tables[2].Rows[0][0].ToString();
                 if (dt.Tables[0] != null)
                 {
-                    GridView1.DataSource = ds.Tables[0];
+                    GridView1.DataSource = dt.Tables[0];
                     GridView1.DataBind();
                     if (dt.Tables[0].Rows.Count > 0)
                     {
@@ -151,7 +154,7 @@ namespace ProfitCenterReport
                             sb.Append("</ul></li><li class='has-sub'><a href='#'><span>" + arrFy[0] + "</span></a><ul>");
                         str.Add(arrFy[0]);
                     }
-                    sb.Append("<li class='has-sub'><a href='" + string.Format("Report.aspx?centerid={0}&tfName={1}&unit={2}&role={3}", profitCenter, dt.Rows[i][0].ToString(), unit, strRole) + "'><span>" + dt.Rows[i][0].ToString() + "</span></a></li>");
+                    sb.Append("<li class='has-sub'><a href='" + string.Format("Report.aspx?centerid={0}&tfName={1}&unit={2}&role={3}&link=menu", profitCenter, dt.Rows[i][0].ToString(), unit, strRole) + "'><span>" + dt.Rows[i][0].ToString() + "</span></a></li>");
                 }
                 else
                 {
@@ -559,7 +562,7 @@ namespace ProfitCenterReport
             }
         }
 
-        
+
 
     }
 }
