@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head runat="server">
     <title>Financial Report</title>
     <style>
@@ -90,6 +91,12 @@
             <tr valign="middle">
                 <td colspan="2">
                     <asp:Label Text="" runat="server" ID="lblFormName" Font-Bold="true" />
+                </td>
+            </tr>
+            <tr runat="server" id="trExport" visible="false">
+                <td colspan="2" align="left">
+                    <asp:Image ImageUrl="~/image/rupees.png" runat="server" Height="32px" Width="32px" />
+                    <asp:Label ID="lblRuppes" runat="server" Text="In Lacs" Font-Bold="True"></asp:Label>
                     <asp:Button ID="btnReport" CssClass="float_right" runat="server" Text="Export Report" OnClick="btnReport_Click" />
 
                 </td>
@@ -100,6 +107,8 @@
                     </div>
                 </td>
                 <td>
+
+
                     <asp:GridView ID="GridView1" CssClass="serh-grid" runat="server" DataKeyNames="Id" AutoGenerateColumns="False"
                         TabIndex="1" Width="100%" CellPadding="4" ForeColor="Black" GridLines="Vertical"
                         OnRowDataBound="GridView1_RowDataBound"
@@ -190,31 +199,26 @@
                 <td align="center">
                     <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
                     <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ValidationExpression="^\d*\.?\d+$" ControlToValidate="TextBox1" Text="*" ForeColor="Red" Display="Dynamic"></asp:RegularExpressionValidator>
-                    <asp:RequiredFieldValidator ErrorMessage="Enter Values" ControlToValidate="TextBox1" runat="server" Display="Dynamic" ForeColor="Red" />
 
                 </td>
                 <td align="center">
                     <asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
                     <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" ValidationExpression="^\d*\.?\d+$" ControlToValidate="TextBox2" Text="*" ForeColor="Red" Display="Dynamic"></asp:RegularExpressionValidator>
-                    <asp:RequiredFieldValidator ErrorMessage="Enter Values" ControlToValidate="TextBox2" runat="server" Display="Dynamic" ForeColor="Red" />
 
                 </td>
                 <td align="center">
                     <asp:TextBox ID="TextBox3" runat="server"></asp:TextBox>
                     <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ValidationExpression="^\d*\.?\d+$" ControlToValidate="TextBox3" Text="*" ForeColor="Red" Display="Dynamic"></asp:RegularExpressionValidator>
-                    <asp:RequiredFieldValidator ErrorMessage="Enter Values" ControlToValidate="TextBox3" runat="server" Display="Dynamic" ForeColor="Red" />
 
                 </td>
                 <td align="center">
                     <asp:TextBox ID="TextBox4" runat="server"></asp:TextBox>
                     <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" ValidationExpression="^\d*\.?\d+$" ControlToValidate="TextBox4" Text="*" ForeColor="Red" Display="Dynamic"></asp:RegularExpressionValidator>
-                    <asp:RequiredFieldValidator ErrorMessage="Enter Values" ControlToValidate="TextBox4" runat="server" Display="Dynamic" ForeColor="Red" />
 
                 </td>
                 <td align="center">
                     <asp:TextBox ID="TextBox5" runat="server"></asp:TextBox>
                     <asp:RegularExpressionValidator ID="RegularExpressionValidator5" runat="server" ValidationExpression="^\d*\.?\d+$" ControlToValidate="TextBox5" Text="*" ForeColor="Red" Display="Dynamic"></asp:RegularExpressionValidator>
-                    <asp:RequiredFieldValidator ErrorMessage="Enter Values" ControlToValidate="TextBox5" runat="server" Display="Dynamic" ForeColor="Red" />
 
                 </td>
                 <td>
@@ -222,14 +226,7 @@
             </tr>
 
         </table>
-
-
-
-
-
-
-
-
+        <asp:Button ID="btnBack" CssClass="float_right" runat="server" Text="Back" PostBackUrl="~/ProfitCenter.aspx" />
     </form>
 </body>
 </html>

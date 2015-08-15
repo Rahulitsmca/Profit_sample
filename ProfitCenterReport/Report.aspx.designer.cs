@@ -49,6 +49,24 @@ namespace ProfitCenterReport {
         protected global::System.Web.UI.WebControls.Label lblFormName;
         
         /// <summary>
+        /// trExport control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trExport;
+        
+        /// <summary>
+        /// lblRuppes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblRuppes;
+        
+        /// <summary>
         /// btnReport control.
         /// </summary>
         /// <remarks>
@@ -200,5 +218,14 @@ namespace ProfitCenterReport {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnUpdate;
+        
+        /// <summary>
+        /// btnBack control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnBack;
     }
 }

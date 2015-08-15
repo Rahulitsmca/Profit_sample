@@ -75,6 +75,7 @@
     <Content Include="image\Close.png" />
     <Content Include="image\download.jpg" />
     <Content Include="image\edit.png" />
+    <Content Include="image\rupees.png" />
     <Content Include="ProfitCenter.aspx" />
     <Content Include="Report.aspx" />
     <Content Include="Style\style.css" />

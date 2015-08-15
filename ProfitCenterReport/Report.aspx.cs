@@ -13,6 +13,8 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using System.Web.Configuration;
 using System.Data.SqlClient;
+using System.Globalization;
+using System.Threading;
 
 namespace ProfitCenterReport
 {
@@ -20,6 +22,7 @@ namespace ProfitCenterReport
     {
         static int pcId = 0;
         static int unit = 1;
+        static string strRsType = string.Empty;
         static string tfName = string.Empty;
         static string strRole = string.Empty;
         static string headerContent = string.Empty;
@@ -40,6 +43,9 @@ namespace ProfitCenterReport
         double dblGrandTotalFothYear = 0;
         double dblGrandTotalFifthYear = 0;
 
+
+
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -50,6 +56,7 @@ namespace ProfitCenterReport
                 {
                     pcId = Convert.ToInt32(Request.QueryString["centerid"]);
                     strRole = Request.QueryString["role"];
+                    strRsType = Request.QueryString["unit"].ToUpper();
                     BindMenuItem(pcId);
 
                     if (Session["centername"] != null)
@@ -63,11 +70,16 @@ namespace ProfitCenterReport
                         lblFormName.Text = string.Format(ConfigurationManager.AppSettings["formName"], tfName.ToUpper());
 
                         if (!string.IsNullOrEmpty(Request.QueryString["unit"]) && Request.QueryString["unit"].ToUpper() == "C")
+                        {
+
                             unit = 10000000;
+                            lblRuppes.Text = "In Crores";
+                        }
                         else
                             unit = 100000;
 
                         BindGrid();
+                        trExport.Visible = true;
                     }
                 }
             }
@@ -81,13 +93,6 @@ namespace ProfitCenterReport
                 string actualYear = ConfigurationManager.AppSettings["ActualYear"];
                 DataSet dt = _db.GetExpenseData(pcId, tfName, Convert.ToInt32(actualYear), unit);
 
-                //string connectionString = WebConfigurationManager.ConnectionStrings["ComsoftAAIConnection"].ConnectionString;
-
-                //SqlConnection con = new SqlConnection(connectionString);
-                //SqlCommand cmd = new SqlCommand("select * from tariff_expenditure_revenue_file where profitcenter=12018 and tariff_form_name='F11(B)'", con);
-                //DataSet ds = new DataSet();
-                //SqlDataAdapter ad = new SqlDataAdapter(cmd);
-                //ad.Fill(ds);
                 if (dt.Tables[2].Rows.Count > 0)
                     lblHeaderName.Text = Convert.ToString(dt.Tables[2].Rows[0][0]);
                 if (dt.Tables[0] != null)
@@ -103,12 +108,12 @@ namespace ProfitCenterReport
                         }
 
                         //making particular bold
-                        GridView1.Rows[GridView1.Rows.Count - 1].Cells[0].Font.Bold = true;
+                        //GridView1.Rows[GridView1.Rows.Count - 1].Cells[0].Font.Bold = true;
 
                         //making total row bold
                         foreach (TableCell item in GridView1.Rows[GridView1.Rows.Count - 1].Cells)
                         {
-                            item.Font.Bold = true;
+                            //item.Font.Bold = true;
                         }
                     }
                 }
@@ -154,7 +159,7 @@ namespace ProfitCenterReport
                             sb.Append("</ul></li><li class='has-sub'><a href='#'><span>" + arrFy[0] + "</span></a><ul>");
                         str.Add(arrFy[0]);
                     }
-                    sb.Append("<li class='has-sub'><a href='" + string.Format("Report.aspx?centerid={0}&tfName={1}&unit={2}&role={3}&link=menu", profitCenter, dt.Rows[i][0].ToString(), unit, strRole) + "'><span>" + dt.Rows[i][0].ToString() + "</span></a></li>");
+                    sb.Append("<li class='has-sub'><a href='" + string.Format("Report.aspx?centerid={0}&tfName={1}&unit={2}&role={3}&link=menu", profitCenter, dt.Rows[i][0].ToString(), strRsType, strRole) + "'><span>" + dt.Rows[i][0].ToString() + "</span></a></li>");
                 }
                 else
                 {
@@ -290,14 +295,50 @@ namespace ProfitCenterReport
             //"application/vnd.ms-excel",//MIME type of Excel files
             //"ArticleList.xls");
 
+            string fileName = "report.xls";
+            const int bufferLength = 10000;
+            byte[] buffer = new Byte[bufferLength];
+            int length = 0;
+            if (!string.IsNullOrEmpty(Convert.ToString(Session["centername"])))
+            {
+                fileName = Convert.ToString(Session["centername"]) + ".xls";
+            }
+            Response.ContentType = "Application/x-msexcel";
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName + "");
+            Stream download = null;
+            try
+            {
+                using (FileStream file = new FileStream(Server.MapPath("/Export/" + fileName + ""), FileMode.Create, FileAccess.Write))
+                {
+                    output.WriteTo(file);
+                }
 
-            FileStream file = new FileStream(Server.MapPath("/Export/report.xls"), FileMode.Create, FileAccess.Write);
-            output.WriteTo(file);
-
-            output.Close();
-            file.Close();
-
-            //Server.Transfer("~/Export/report.xls", true);
+                download = new FileStream(Server.MapPath("/Export/" + fileName + ""),
+                                                   FileMode.Open,
+                                                   FileAccess.Read);
+                do
+                {
+                    if (Response.IsClientConnected)
+                    {
+                        length = download.Read(buffer, 0, bufferLength);
+                        Response.OutputStream.Write(buffer, 0, length);
+                        buffer = new Byte[bufferLength];
+                    }
+                    else
+                    {
+                        length = -1;
+                    }
+                }
+                while (length > 0);
+                Response.Flush();
+                Response.End();
+            }
+            finally
+            {
+                if (download != null)
+                    download.Close();
+            }
+            BindGrid();
         }
 
         private void GenerateExcel(DataSet customerOrders)
@@ -546,12 +587,12 @@ namespace ProfitCenterReport
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
 
-                strPreviousRowID = DataBinder.Eval(e.Row.DataItem, "MainHead_tariff_Name").ToString();
-                double dblFstYear = Convert.ToDouble(DataBinder.Eval(e.Row.DataItem, "First_Year").ToString());
-                double dblSndYear = Convert.ToDouble(DataBinder.Eval(e.Row.DataItem, "Second_Year").ToString());
-                double dblThdYear = Convert.ToDouble(DataBinder.Eval(e.Row.DataItem, "Third_Year").ToString());
-                double dblFothYear = Convert.ToDouble(DataBinder.Eval(e.Row.DataItem, "Fourth_Year").ToString());
-                double dblFiftYear = Convert.ToDouble(DataBinder.Eval(e.Row.DataItem, "Fifth_Year").ToString());
+                strPreviousRowID = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "MainHead_tariff_Name"));
+                double dblFstYear = Convert.ToDouble(DataBinder.Eval(e.Row.DataItem, "First_Year"));
+                double dblSndYear = Convert.ToDouble(DataBinder.Eval(e.Row.DataItem, "Second_Year"));
+                double dblThdYear = Convert.ToDouble(DataBinder.Eval(e.Row.DataItem, "Third_Year"));
+                double dblFothYear = Convert.ToDouble(DataBinder.Eval(e.Row.DataItem, "Fourth_Year"));
+                double dblFiftYear = Convert.ToDouble(DataBinder.Eval(e.Row.DataItem, "Fifth_Year"));
                 // Cumulating Sub Total 
                 dblSubTotalFstYear += dblFstYear;
                 dblSubTotalSndYear += dblSndYear;
